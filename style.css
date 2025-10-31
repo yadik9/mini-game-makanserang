@@ -35,6 +35,9 @@ body{font-family: 'Orbitron', Inter, ui-sans-serif, system-ui, -apple-system, 'S
 .energy-fill{height:100%;background:linear-gradient(90deg,#00ffe1 0%, #7a4bff 45%, #ff3ec7 100%);transition:width 300ms ease;box-shadow:0 8px 26px rgba(122,75,255,0.18);}
 .energy-value{width:56px;text-align:right;color:#d8eaff;font-weight:600;font-size:13px}
 .controls{display:flex;gap:10px}
+.inventory{display:flex;gap:8px;margin-top:10px}
+.inventory select{background:rgba(255,255,255,0.03);border:1px solid rgba(124,58,237,0.12);color:#e6f6ff;padding:8px;border-radius:8px}
+.inventory button{padding:8px 10px;border-radius:8px}
 .btn{flex:1;padding:10px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:600}
 .btn.primary{background:linear-gradient(90deg,#00f0d6 0%, #7a4bff 55%);color:#04111a;box-shadow:0 12px 36px rgba(122,75,255,0.16), inset 0 -2px 12px rgba(0,0,0,0.16)}
 .btn.danger{background:linear-gradient(90deg,#ff4d6d 0%, #ff3ec7 60%);color:#04111a;box-shadow:0 12px 36px rgba(255,77,109,0.14)}

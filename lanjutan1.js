@@ -32,6 +32,59 @@ const addLog = (text) => {
 const player1 = createPlayer('Yad', 50);
 const player2 = createPlayer('Diks', 50);
 
+// Inventory factory and sample items
+const createItem = (id, name, type, effect, uses=1) => ({ id, name, type, effect, uses });
+
+// sample items: makanan (restore), senjata (damage)
+const apple = createItem('apple', 'Buah +20', 'food', { heal: 20 }, 3);
+const burger = createItem('burger', 'Burger +35', 'food', { heal: 35 }, 1);
+const laser = createItem('laser', 'Laser Gun -25', 'weapon', { damage: 25 }, 2);
+const dagger = createItem('dagger', 'Dagger -12', 'weapon', { damage: 12 }, 4);
+
+// Assign inventories (copy items - each player has their own uses)
+player1.inventory = [ {...apple}, {...laser} ];
+player2.inventory = [ {...burger}, {...dagger} ];
+
+// helper to populate selects
+const populateInventory = (selectEl, inventory) => {
+    selectEl.innerHTML = '';
+    inventory.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.id;
+        opt.textContent = `${item.name} (x${item.uses})`;
+        selectEl.appendChild(opt);
+    });
+};
+
+// populate initial selects
+populateInventory($('#p1-items'), player1.inventory);
+populateInventory($('#p2-items'), player2.inventory);
+
+// use item implementation
+const useItem = (player, target, selectEl) => {
+    const id = selectEl.value;
+    const item = player.inventory.find(i => i.id === id);
+    if (!item) return;
+
+    if (item.type === 'food') {
+        player.energy = Math.min(100, player.energy + (item.effect.heal || 0));
+        addLog(`${player.name} memakai ${item.name} (+${item.effect.heal})`);
+    } else if (item.type === 'weapon') {
+        target.energy = Math.max(0, target.energy - (item.effect.damage || 0));
+        addLog(`${player.name} menyerang ${target.name} dengan ${item.name} (-${item.effect.damage})`);
+    }
+
+    // decrement uses and remove if none left
+    item.uses -= 1;
+    if (item.uses <= 0) {
+        player.inventory = player.inventory.filter(i => i.id !== item.id);
+    }
+
+    // refresh UI
+    populateInventory(selectEl, player.inventory);
+    render();
+};
+
 // Initialize DOM
 const p1NameEl = $('#p1-name');
 const p2NameEl = $('#p2-name');
@@ -78,6 +131,10 @@ $('#p2-eat').addEventListener('click', () => {
     render();
     addLog(`${res.player} makan (+${res.amount}) — Energi: ${player2.energy}`);
 });
+
+// Use item buttons
+$('#p1-use-item').addEventListener('click', () => useItem(player1, player2, $('#p1-items')));
+$('#p2-use-item').addEventListener('click', () => useItem(player2, player1, $('#p2-items')));
 
 $('#p1-attack').addEventListener('click', () => {
     const res = player1.attack(player2, 5);
